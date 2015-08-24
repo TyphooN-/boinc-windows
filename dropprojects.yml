@@ -1,0 +1,62 @@
+---
+- name: Remove all projects from BOINC
+  hosts: boinc-windows
+
+  vars_files:
+    - vars/vars.yml
+    - vars/winrm.yml
+
+  tasks:
+    - name: 'Remove account manager from BOINC.'
+      raw: '"{{ boinccmdwin }}" --quit_acct_mgr'
+      ignore_errors: yes
+
+    - name: 'Ensure Ansible directory exists.'
+      win_file: path={{ ansibledir }} state=directory
+    
+    - name: 'Generate bash script to be interpreted by cygwin.'
+      win_template: src=templates/boincurls.j2 dest='{{ ansibledir }}\boincurls.sh'
+
+    - name: 'Register BOINC project URLs to a variable.'
+      raw: '{{ cygwin }}\bash.exe {{ ansibledir }}\boincurls.sh' 
+      register: projecturl
+
+    - name: 'Detach from all BOINC projects'
+      raw: '"{{ boinccmdwin }}" --project {{ item }} detach'
+      with_items:
+        - "{{ projecturl.stdout_lines }}"
+      ignore_errors: yes
+
+    - name: 'Kill boinc.exe'
+      raw: 'taskkill /F /IM boinc.exe'
+      ignore_errors: yes
+
+    - name: 'Kill boincmgr.exe'
+      raw: 'taskkill /F /IM boincmgr.exe'
+      ignore_errors: yes
+
+    - name: 'Kill boinctray.exe'
+      raw: 'taskkill /F /IM boinctray.exe'
+      ignore_errors: yes
+
+    - name: 'Delete all job logs.'
+      win_file: path={{ boincdatadir }}\job*.txt state=absent
+
+    - name: 'Delete all scheduler xml files.'
+      win_file: path={{ boincdatadir }}\sched*.xml state=absent
+
+    - name: 'Clean out slots folder.'
+      win_file: path={{ boincdatadir }}\slots\* state=absent
+
+    - name: 'Empty out stdoutdae.txt'
+      win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stdoutdae.txt'
+
+    - name: 'Empty out stderrdae.txt'
+      win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stderrdae.txt'
+
+    - name: 'Empty out stderrgpudetect.txt'
+      win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stderrgpudetect.txt'
+
+    - name: 'Empty out stdoutgpudetect.txt'
+      win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stdoutgpudetect.txt'
+
