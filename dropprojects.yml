@@ -13,12 +13,12 @@
 
     - name: 'Ensure Ansible directory exists.'
       win_file: path={{ ansibledir }} state=directory
-
+    
     - name: 'Generate bash script to be interpreted by cygwin.'
       win_template: src=templates/boincurls.j2 dest='{{ ansibledir }}\boincurls.sh'
 
     - name: 'Register BOINC project URLs to a variable.'
-      raw: '{{ cygwin }}\bash.exe {{ ansibledir }}\boincurls.sh'
+      raw: '{{ cygwin }}\bash.exe {{ ansibledir }}\boincurls.sh' 
       register: projecturl
 
     - name: 'Detach from all BOINC projects'
@@ -42,14 +42,23 @@
     - name: 'Delete all job logs.'
       win_file: path={{ boincdatadir }}\job* state=absent
 
+    - name: 'Delete all account files.'
+      win_file: path={{ boincdatadir }}\account* state=absent
+
+    - name: 'Delete all statistics files.'
+      win_file: path={{ boincdatadir }}\statistics* state=absent
+
     - name: 'Delete all scheduler files.'
       win_file: path={{ boincdatadir }}\sched* state=absent
 
     - name: 'Delete any master files.'
       win_file: path={{ boincdatadir }}\master* state=absent
 
-    - name: 'Clean out slots folder.'
+    - name: 'Clean out slots directory.'
       win_file: path={{ boincdatadir }}\slots\* state=absent
+
+    - name: 'Clean out projects directory.'
+      win_file: path={{ boincdatadir }}\projects\* state=absent
 
     - name: 'Empty out stdoutdae.txt'
       win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stdoutdae.txt'
@@ -62,3 +71,4 @@
 
     - name: 'Empty out stdoutgpudetect.txt'
       win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stdoutgpudetect.txt'
+
