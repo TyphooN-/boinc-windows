@@ -1,5 +1,7 @@
 ---
 cygwin: 'C:\cygwin64\bin\'
 boinccmdcyg: '/cygdrive/c/Program\ Files/BOINC/boinccmd.exe'
-boinccmdwin: 'C:\Program Files\BOINC\boinccmd.exe'
+boinccmdwin: '"C:\Program Files\BOINC\boinccmd.exe"'
+boincmgr: 'C:\Program Files\BOINC\boincmgr.exe'
 ansibledir: 'C:\ansible\'
+acctmgr: 'http://bam.boincstats.com/'
