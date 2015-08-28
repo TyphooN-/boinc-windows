@@ -8,7 +8,7 @@
 
   tasks:
     - name: 'Remove account manager from BOINC.'
-      raw: '"{{ boinccmdwin }}" --quit_acct_mgr'
+      raw: '{{ boinccmdwin }} --quit_acct_mgr'
       ignore_errors: yes
 
     - name: 'Ensure Ansible directory exists.'
