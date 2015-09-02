@@ -1,0 +1,29 @@
+---
+- name: 'Add Account Manager to BOINC client.' 
+  hosts: boinc-windows
+
+  vars_files:
+    - vars/vars.yml
+    - vars/winrm.yml
+    - vars/boinccreds.yml
+
+  tasks:
+
+    - name: 'Ensure Ansible directory exists.'
+      win_file: path={{ ansibledir }} state=directory
+
+    - name: 'Copy PsExec.exe'
+      win_copy: src='' dest='C:\ansible\'
+
+    - name: 'Start boincmgr.exe to start all BOINC processes.'
+      raw: '{{ ansibledir }}\PsExec.exe -i -d -u "{{ domainuser }}" -p "{{ domainpassword }}" \\{{ item }} {{ boincmgr }}'
+      with_items:
+       - "{{ hostname }}"
+      ignore_errors: yes
+    
+    - name: 'Push batch file to add Account Manager to BOINC.'
+      win_template: src=templates/joinacctmgr.j2 dest='{{ ansibledir }}\joinacctmgr.bat'
+
+    - name: 'Execute batch file.'
+      raw: '{{ ansibledir }}\joinacctmgr.bat'
+
