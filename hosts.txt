@@ -1,3 +1,2 @@
 [boinc-windows]
-host1 boincdatadir='D:\BOINC\'
-host2 boincdatadir='C:\ProgramData\BOINC\'
+hostname.fqdn boincdatadir='E:\BOINC\' hostname='hostname.fqdn'
