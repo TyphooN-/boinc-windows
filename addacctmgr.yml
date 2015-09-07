@@ -5,8 +5,8 @@
   vars_files:
     - vars/vars.yml
     - vars/winrm.yml
+    - vars/wincreds.yml
     - vars/boinccreds.yml
-    - vars/domaincreds.yml
 
   tasks:
 
@@ -14,7 +14,7 @@
       win_file: path={{ ansibledir }} state=directory
 
     - name: 'Start boincmgr.exe to start all BOINC processes.'
-      raw: '{{ ansibledir }}\PsExec.exe -i -d -u "{{ domainuser }}" -p "{{ domainpassword }}" \\{{ item }} {{ boincmgr }}'
+      raw: '{{ ansibledir }}\PsExec.exe -i -d -u "{{ winuser }}" -p "{{ winpass }}" \\{{ item }} {{ boincmgr }}'
       with_items:
        - "{{ hostname }}"
       ignore_errors: yes
@@ -33,7 +33,7 @@
       win_file: path='{{ ansibledir }}\joinacctmgr.bat' state=absent
 
     - name: 'Start boincmgr.exe.'
-      raw: '{{ ansibledir }}\PsExec.exe -i -d -u "{{ domainuser }}" -p "{{ domainpassword }}" \\{{ item }} {{ boincmgr }}'
+      raw: '{{ ansibledir }}\PsExec.exe -i -d -u "{{ winuser }}" -p "{{ winpass }}" \\{{ item }} {{ boincmgr }}'
       with_items:
        - "{{ hostname }}"
       ignore_errors: yes
