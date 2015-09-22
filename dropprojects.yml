@@ -72,3 +72,6 @@
     - name: 'Empty out stdoutgpudetect.txt'
       win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stdoutgpudetect.txt'
 
+    - name: 'Empty out stdoutdae.old'
+      win_template: src=templates/std.j2 dest='{{ boincdatadir }}\stdoutdae.old'
+
